@@ -34,7 +34,7 @@ class AIGuesser(Guesser):
 
     def compute_distance(self, clue, board):
         w2v = []
-        all_vectors = (self.glove_vecs,)
+        all_vectors = (self.word_vectors, self.glove_vecs,)
 
         for word in board:
             try:
