@@ -44,9 +44,10 @@ class AICodemaster(Codemaster):
         print("RED:\t", red_words)
 
         for red_word in red_words:
+            red_synsets = wordnet.synsets(red_word)
             for synset_in_cmwordlist in self.syns:
                 lin_clue = 0
-                for red_synset in wordnet.synsets(red_word):
+                for red_synset in red_synsets:
                     try:
                         # only if the two compared words have the same part of speech
                         lin_score = synset_in_cmwordlist.lin_similarity(red_synset, self.brown_ic)
