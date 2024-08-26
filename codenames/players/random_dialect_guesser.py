@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.spatial.distance
 
-from players.guesser import Guesser
+from guesser import Guesser
 
 
 class AIGuesser(Guesser):
@@ -11,8 +11,8 @@ class AIGuesser(Guesser):
         self.brown_ic = brown_ic
         self.glove_vecs = glove_vecs
         self.word_vectors = word_vectors
-        # self.word_vectors = word_vectors
         self.num = 0
+        self.dialect = np.random(0.95, 1, size=(50, 50))
 
     def set_board(self, words):
         self.words = words
@@ -34,12 +34,13 @@ class AIGuesser(Guesser):
 
     def compute_distance(self, clue, board):
         w2v = []
-        all_vectors = (self.glove_vecs,)
+        all_vectors = (self.word_vectors, self.glove_vecs,)
 
         for word in board:
             try:
                 if word[0] == '*':
                     continue
+                weighted_clue = self.dialect*clue
                 w2v.append((scipy.spatial.distance.cosine(self.concatenate(clue, all_vectors),
                                                           self.concatenate(word.lower(), all_vectors)), word))
             except KeyError:
