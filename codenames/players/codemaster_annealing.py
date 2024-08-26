@@ -17,11 +17,15 @@ class MyProblem(Annealer):
 
 
     def move(self):
-        weights = [20 - i for i in range(20)]
+
+        # legal_words = self.pre_processed_ds.legal_words[self.state.lower()] - self.good_words - self.bad_words
+        legal_words = [item for item in self.pre_processed_ds[self.state.lower()] if item.upper() not in self.good_words and item.upper() not in self.bad_words]
+        weights = [20 - i for i in range(len(legal_words))]
 
         # Choose a word randomly with weights
-        chosen_word = random.choices(self.pre_processed_ds[self.state.lower()], weights=weights, k=1)
-        new_state = chosen_word
+        chosen_word = random.choices(legal_words, weights=weights, k=1)
+        new_state = chosen_word[0]
+        self.state = new_state
 
     def energy(self):
         score = 0
@@ -52,21 +56,9 @@ class MyProblem(Annealer):
         if next_good_word_index is not None:
             score += np.linalg.norm(self.lm[available_words[last_good_word_index]] - self.lm[available_words[next_good_word_index]])
 
+        return -score
 
-        return score
 
-
-# # Example usage:
-# initial_state = 'word'  # Replace with your initial state
-# problem = MyProblem(initial_state)
-# problem.steps = 10000  # Number of iterations
-# problem.Tmax = 1.0  # Initial temperature
-# problem.Tmin = 0.01  # Final temperature
-# problem.schedule = 'geometric'  # Cooling schedule
-#
-# best_state, best_energy = problem.anneal()
-# print("Best state:", best_state)
-# print("Best score:", -best_energy)  # If you are minimizing the score, return the negative energy
 
 
 class AICodemaster(Codemaster):
@@ -76,7 +68,7 @@ class AICodemaster(Codemaster):
         self.lm = glove_vecs
         super().__init__()
         self.pre_processed_ds = {}
-        with open('closest_words_within_dataset.json', 'r') as f:
+        with open('closest_combined_words_within_dataset.json', 'r') as f:
             self.pre_processed_ds = json.load(f)
         # print(self.lm)
 
@@ -101,13 +93,15 @@ class AICodemaster(Codemaster):
             else:
                 red_words.append(self.words[i].lower())
 
-        initial_state = random.choice(self.words)  # Start with a word and a number of guesses
+        initial_state = random.choice([w for w in self.words if w[0]!='*'])
+        # Start with a word and a number of guesses
         # problem = MyProblem(initial_state,)
         problem = MyProblem(initial_state, self.pre_processed_ds, self.lm, red_words, bad_words)
-        problem.steps = 10000  # Number of iterations
+        problem.steps = 50000  # Number of iterations
         problem.Tmax = 1.0  # Initial temperature
         problem.Tmin = 0.01  # Final temperature
-        problem.schedule = 'geometric'  # Cooling schedule
+        # problem.schedule = 'geometric'  # Cooling schedule
+        problem.schedule = 'exponential'  # Cooling schedule
         best_state, best_energy = problem.anneal()
 
         return best_state.lower(), 1
