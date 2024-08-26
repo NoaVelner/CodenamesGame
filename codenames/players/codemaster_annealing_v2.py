@@ -46,7 +46,7 @@ class MyProblem(Annealer):
         best_words_avg = np.mean([self.lm[w] for w in best_words], axis=0)
         dist = np.linalg.norm(self.lm[cur_word.lower()] - best_words_avg)
         score += dist/num
-        return score
+        return score +1
         # return dist / num
 
 
