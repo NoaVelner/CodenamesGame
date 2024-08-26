@@ -7,6 +7,7 @@ class Guesser(ABC):
         """Handle pretrained vectors and declare instance vars"""
         pass
 
+
     @abstractmethod
     def set_board(self, words_on_board):
         """Set function for the current game board"""
