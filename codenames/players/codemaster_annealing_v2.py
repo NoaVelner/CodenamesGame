@@ -19,45 +19,35 @@ class MyProblem(Annealer):
     def move(self):
 
         # legal_words = self.pre_processed_ds.legal_words[self.state.lower()] - self.good_words - self.bad_words
-        legal_words = [item for item in self.pre_processed_ds[self.state.lower()] if item.upper() not in self.good_words and item.upper() not in self.bad_words]
-        weights = [20 - i for i in range(len(legal_words))]
-
+        legal_words = [item for item in self.pre_processed_ds[self.state[0].lower()] if item.upper() not in self.good_words and item.upper() not in self.bad_words]
+        # weights = [len(legal_words) - i for i in range(len(legal_words))]
         # Choose a word randomly with weights
-        chosen_word = random.choices(legal_words, weights=weights, k=1)
+        chosen_word = random.choices(legal_words, k=1)
+        num = random.randint(1, len(self.good_words))
         new_state = chosen_word[0]
-        self.state = new_state
+        self.state = (new_state, num)
 
     def energy(self):
         score = 0
-        last_good_word_index = -1
+        cur_word = self.state[0] #TOOD MAKE IT CHOOSE A WORD FROM THE 7K and not from the 25
+        num = self.state[1]
         available_words = []
         for word in self.good_words:
-            available_words.append(word)
+            available_words.append(word.lower())
         for word in self.bad_words:
-            available_words.append(word)
+            available_words.append(word.lower())
+        available_words.sort(key=lambda x: np.linalg.norm(self.lm[cur_word.lower()] - self.lm[x.lower()]))
+        best_words = available_words[:num]
 
-        available_words.sort(key=lambda x: np.linalg.norm(self.lm[self.state.lower()] - self.lm[x.lower()]))
+        for i, w in enumerate(best_words): #TODO BIGGER PUNISHMENT IF IT'S RELATED TO ASSASSIN.
+            if w in self.bad_words:
+                score += 10 / (i+1)
 
-        # Define the objective function (energy) to minimize
-        # For example, calculate how close the state is to good words and far from bad words
-        for w in available_words:
-            if w in self.good_words:
-
-                score += 100
-                last_good_word_index += 1
-
-            else:
-                break
-        next_good_word_index = None
-        for i in range(last_good_word_index+1, len(available_words)):
-            if available_words[i] in self.good_words:
-                next_good_word_index = i
-                break
-
-        if next_good_word_index is not None:
-            score += np.linalg.norm(self.lm[available_words[last_good_word_index]] - self.lm[available_words[next_good_word_index]])
-
-        return -score
+        best_words_avg = np.mean([self.lm[w] for w in best_words], axis=0)
+        dist = np.linalg.norm(self.lm[cur_word.lower()] - best_words_avg)
+        score += dist/num
+        return score
+        # return dist / num
 
 
 
@@ -93,8 +83,8 @@ class AICodemaster(Codemaster):
                 bad_words.append(self.words[i].lower())
             else:
                 red_words.append(self.words[i].lower())
-
-        initial_state = random.choice([w for w in self.words if w[0]!='*'])
+        random_red_word = random.choice(red_words)
+        initial_state = (random.choice([w for w in self.pre_processed_ds[random_red_word.lower()]]), 3) #TODO CHANGE NUMBER
         # Start with a word and a number of guesses
         # problem = MyProblem(initial_state,)
         problem = MyProblem(initial_state, self.pre_processed_ds, self.lm, red_words, bad_words)
@@ -105,5 +95,5 @@ class AICodemaster(Codemaster):
         problem.schedule = 'exponential'  # Cooling schedule
         best_state, best_energy = problem.anneal()
 
-        return best_state.lower(), 1
+        return best_state[0].lower(), best_state[1]
 
