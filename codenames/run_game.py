@@ -35,8 +35,8 @@ class GameRun:
 
         self.do_log = not args.no_log
         self.do_print = not args.no_print
+        self.save_stdout = sys.stdout
         if not self.do_print:
-            self.save_stdout = sys.stdout
             sys.stdout = open(os.devnull, 'w')
         self.set_game_name(args.game_name)
 
