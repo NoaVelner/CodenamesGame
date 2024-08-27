@@ -140,7 +140,7 @@ if __name__ == "__main__":
 
     for i in range(game_setup.num_games):
         if game_setup.num_games > 1:
-            game_setup.set_game_name(f"{game_setup.game_name[:-2]}_{i+1}")
+            game_setup.set_game_name(f"{game_setup.game_name[:-(len(str(i+1))+1)]}_{i+1}")
         game = Game(game_setup.codemaster,
                     game_setup.guesser,
                     seed=game_setup.seed,
