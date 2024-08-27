@@ -127,7 +127,6 @@ def print_progress_bar(game_setup, iteration, total, length=50):
     filled_length = int(length * iteration // total)
     bar = '#' * filled_length + '-' * (length - filled_length)
     game_setup.save_stdout.write(f'\rProgress: |{bar}| {percent}% Complete')
-    game_setup.save_stdout.write(f'\rProgress: |{bar}| {percent}% Complete')
     game_setup.save_stdout.flush()
 
     if iteration == total:
