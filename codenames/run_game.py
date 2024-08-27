@@ -134,14 +134,12 @@ def print_progress_bar(game_setup, iteration, total, length=50):
         print()
 
 if __name__ == "__main__":
-    print("started main")
     game_setup = GameRun()
     if game_setup.num_games > 1:
         game_setup.set_game_name(f"{game_setup.game_name}_{0}")
         print_progress_bar(game_setup, 0, game_setup.num_games)
 
     for i in range(game_setup.num_games):
-        # print(f"iteration {i}")
         if game_setup.num_games > 1:
             game_setup.set_game_name(f"{game_setup.game_name[:-2]}_{i+1}")
         game = Game(game_setup.codemaster,
