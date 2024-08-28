@@ -3,7 +3,7 @@ import scipy.spatial.distance
 
 from players.guesser import Guesser
 
-#
+
 # class AIGuesser(Guesser):
 #
 #     def __init__(self, brown_ic=None, glove_vecs=None, word_vectors=None):
@@ -61,23 +61,26 @@ from players.guesser import Guesser
 #         for vec in wordvecs[1:]:
 #             concatenated = np.hstack((concatenated, vec[word]))
 #         return concatenated
-#
-#     import scipy.spatial.distance
-#     import numpy as np
-#
-#     from players.guesser import Guesser
+
 
 class AIGuesser(Guesser):
 
-    def __init__(self, brown_ic=None, glove_vecs=None, word_vectors=None):
+    def __init__(self, brown_ic=None, glove_vecs=None, word_vectors=None, param=0.1, distance_threshold=0.7):
         super().__init__()
         self.brown_ic = brown_ic
         self.glove_vecs = glove_vecs
         self.word_vectors = word_vectors
         self.num = 0
-        param = 0.3
-        self.matrix = np.random.uniform(1-param, 1+param, (300, 300))
+        size=300
+        random_values =  np.random.binomial(1, 0.05, size=(300,))
+        secondary_diagonal =  np.random.binomial(1, 0.01, size=(299,))
+        theard_diagonal =  np.random.binomial(1, 0.1, size=(300,))
+        self.matrix = np.diag(random_values)
+        self.matrix[np.arange(size - 1), np.arange(1, size)] = secondary_diagonal
 
+        print(self.matrix)
+
+        self.distance_threshold = distance_threshold
 
     def set_board(self, words):
         self.words = words
@@ -93,14 +96,21 @@ class AIGuesser(Guesser):
 
     def get_answer(self):
         sorted_words = self.compute_distance(self.clue, self.words)
-        print(sorted_words[0][1])
-        # print(f'guesses: {sorted_words}')
+        next_guess_distance, next_guess_word = sorted_words[0]
+
+        # if next_guess_distance > self.distance_threshold:
+        #     print(f"Next guess is too far-fetched ({next_guess_distance} > {self.distance_threshold}), stopping.")
+        #     self.num = 0
+        #     return None
+
+        print(sorted_words[0][1], next_guess_distance)
         self.num -= 1
         return sorted_words[0][1]
 
     def compute_distance(self, clue, board):
         w2v = []
 
+        flag=True
         for word in board:
             try:
                 if word[0] == '*':
@@ -108,6 +118,8 @@ class AIGuesser(Guesser):
 
                 transformed_clue_vec = np.dot(self.word_vectors[clue], self.matrix)
                 transformed_word_vec = np.dot(self.word_vectors[word.lower()], self.matrix)
+                if flag:
+                    flag=False
 
                 distance = scipy.spatial.distance.cosine(transformed_clue_vec, transformed_word_vec)
                 w2v.append((distance, word))

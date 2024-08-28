@@ -7,7 +7,9 @@ import players.random_dialect_guesser
 
 class MetaGuesser:
     def __init__(self, brown_ic=None, glove_vecs=None, word_vectors=None):
-        self.players = [players.random_dialect_guesser.AIGuesser(brown_ic, glove_vecs, word_vectors) for _ in range(5)]
+        # noise = np.random.normal(0, 0.1, 5)
+        # print(noise)
+        self.players = [players.random_dialect_guesser.AIGuesser(brown_ic, glove_vecs, word_vectors, -2) for i in range(5)]
 
     def set_board(self, words):
         for player in self.players:
