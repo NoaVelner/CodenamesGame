@@ -122,12 +122,15 @@ class GameRun:
         return my_class
 
 
-def print_progress_bar(game_setup, iteration, total, length=50):
+def print_progress_bar(game_setup=None, iteration=0, total=1, length=50):
     percent = ("{0:.1f}").format(100 * (iteration / float(total)))
     filled_length = int(length * iteration // total)
     bar = '#' * filled_length + '-' * (length - filled_length)
-    game_setup.save_stdout.write(f'\rProgress: |{bar}| {percent}% Complete')
-    game_setup.save_stdout.flush()
+    if game_setup:
+        game_setup.save_stdout.write(f'\rProgress: |{bar}| {percent}% Complete')
+        game_setup.save_stdout.flush()
+    else:
+        sys.stdout.write(f'\rProgress: |{bar}| {percent}% Complete')
 
     if iteration == total:
         print()
