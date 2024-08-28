@@ -1,10 +1,16 @@
 import json
+import sys
+
 from scipy.spatial.distance import cosine
 
 import gensim.downloader as api
 
+from codenames.run_game import print_progress_bar
+
+model_name = 'word2vec-google-news-300'
+
 # Load pre-trained GloVe vectors (e.g., 50-dimensional vectors)
-model = api.load("glove-wiki-gigaword-50")
+model = api.load(model_name)
 
 # Load your dataset of 7,500 words
 with open('combine_words.txt', 'r') as file:
@@ -39,13 +45,16 @@ def get_closest_words_within_dataset(word, word_list, model, max_words=20):
 closest_words_dataset = {}
 
 length = len(word_dataset)
+precentage = 0
 
 for i, word in enumerate(word_dataset):
+    if i*100/length > precentage:
+        print_progress_bar(iteration=i, total=length)
+        precentage = precentage + 1
     closest_words_dataset[word] = get_closest_words_within_dataset(word, master_dataset, model, max_words=20)
-    if i %100 ==0:
-        print(i)
 
-with open('closest_combined_words_within_dataset.json', 'w') as f:
+
+with open(f'closest_combined_words_within_{model_name}.json', 'w') as f:
     json.dump(closest_words_dataset, f)
 
 print(closest_words_dataset)
