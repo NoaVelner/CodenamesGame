@@ -11,6 +11,7 @@ class AIGuesser(Guesser):
         self.brown_ic = brown_ic
         self.glove_vecs = glove_vecs
         self.word_vectors = word_vectors
+        # self.word_vectors = word_vectors
         self.num = 0
 
     def set_board(self, words):

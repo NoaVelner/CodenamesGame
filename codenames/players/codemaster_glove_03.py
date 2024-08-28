@@ -46,6 +46,7 @@ class AICodemaster(Codemaster):
         all_vectors = (self.glove_vecs,)
         bests = {}
 
+
         if not self.bad_word_dists:
             self.bad_word_dists = {}
             for word in bad_words:

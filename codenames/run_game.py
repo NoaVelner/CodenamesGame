@@ -29,14 +29,16 @@ class GameRun:
         parser.add_argument("--no_print", help="Supress printing", action='store_true', default=False)
         parser.add_argument("--game_name", help="Name of game in log", default="default")
 
+        parser.add_argument("--num_games", help="Number of games to run", default=1, type=int)
+
         args = parser.parse_args()
 
         self.do_log = not args.no_log
         self.do_print = not args.no_print
+        self.save_stdout = sys.stdout
         if not self.do_print:
-            self._save_stdout = sys.stdout
             sys.stdout = open(os.devnull, 'w')
-        self.game_name = args.game_name
+        self.set_game_name(args.game_name)
 
         self.g_kwargs = {}
         self.cm_kwargs = {}
@@ -93,11 +95,20 @@ class GameRun:
         else:
             self.seed = int(args.seed)
 
+        self.num_games = args.num_games
+
+    def set_game_name(self, game_name):
+        self.game_name = game_name
+
+    def update_seed(self):
+        self.seed = time.time()
+
+
     def __del__(self):
         """reset stdout if using the do_print==False option"""
         if not self.do_print:
             sys.stdout.close()
-            sys.stdout = self._save_stdout
+            sys.stdout = self.save_stdout
 
     def import_string_to_class(self, import_string):
         """Parse an import string and return the class"""
@@ -111,16 +122,38 @@ class GameRun:
         return my_class
 
 
+def print_progress_bar(game_setup=None, iteration=0, total=1, length=50):
+    percent = ("{0:.1f}").format(100 * (iteration / float(total)))
+    filled_length = int(length * iteration // total)
+    bar = '#' * filled_length + '-' * (length - filled_length)
+    if game_setup:
+        game_setup.save_stdout.write(f'\rProgress: |{bar}| {percent}% Complete')
+        game_setup.save_stdout.flush()
+    else:
+        sys.stdout.write(f'\rProgress: |{bar}| {percent}% Complete')
+
+    if iteration == total:
+        print()
+
 if __name__ == "__main__":
     game_setup = GameRun()
+    if game_setup.num_games > 1:
+        game_setup.set_game_name(f"{game_setup.game_name}_{0}")
+        print_progress_bar(game_setup, 0, game_setup.num_games)
 
-    game = Game(game_setup.codemaster,
-                game_setup.guesser,
-                seed=game_setup.seed,
-                do_print=game_setup.do_print,
-                do_log=game_setup.do_log,
-                game_name=game_setup.game_name,
-                cm_kwargs=game_setup.cm_kwargs,
-                g_kwargs=game_setup.g_kwargs)
+    for i in range(game_setup.num_games):
+        if game_setup.num_games > 1:
+            game_setup.set_game_name(f"{game_setup.game_name[:-(len(str(i+1))+1)]}_{i+1}")
+        game = Game(game_setup.codemaster,
+                    game_setup.guesser,
+                    seed=game_setup.seed,
+                    do_print=game_setup.do_print,
+                    do_log=game_setup.do_log,
+                    game_name=game_setup.game_name,
+                    cm_kwargs=game_setup.cm_kwargs,
+                    g_kwargs=game_setup.g_kwargs)
 
-    game.run()
+        game.run()
+        if game_setup.num_games > 1:
+            print_progress_bar(game_setup, i + 1, game_setup.num_games)
+            game_setup.update_seed()
