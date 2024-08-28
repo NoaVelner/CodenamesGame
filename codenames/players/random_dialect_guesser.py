@@ -75,9 +75,9 @@ class AIGuesser(Guesser):
         self.glove_vecs = glove_vecs
         self.word_vectors = word_vectors
         self.num = 0
-        param = 0.1
+        param = 0.3
         self.matrix = np.random.uniform(1-param, 1+param, (300, 300))
-        print(self.matrix)
+
 
     def set_board(self, words):
         self.words = words
