@@ -96,15 +96,25 @@ class Game:
             sys.stdout = self._save_stdout
 
     @staticmethod
-    def load_glove_vecs(glove_file_path):
+    def load_glove_vecs(glove_file_path, weights_file_path=None):
         """Load stanford nlp glove vectors
         Original source that matches the function: https://nlp.stanford.edu/data/glove.6B.zip
         """
+        weight_matrix = []
+        if weights_file_path is not None:
+            with open(weights_file_path, encoding="utf-8") as infile:
+                for line in infile:
+                    line = line.rstrip().split(' ')
+                    weight_matrix.append(np.array([float(n) for n in line]))
+
         with open(glove_file_path, encoding="utf-8") as infile:
             glove_vecs = {}
             for line in infile:
                 line = line.rstrip().split(' ')
-                glove_vecs[line[0]] = np.array([float(n) for n in line[1:]])
+                if weights_file_path is not None:
+                    glove_vecs[line[0]] = np.dot(np.array([float(n) for n in line[1:]]), weight_matrix)
+                else:
+                    glove_vecs[line[0]] = np.array([float(n) for n in line[1:]])
             return glove_vecs
 
     @staticmethod

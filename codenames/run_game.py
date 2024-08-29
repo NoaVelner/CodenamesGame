@@ -4,6 +4,8 @@ import argparse
 import time
 import os
 
+import numpy as np
+
 from game import Game
 from players.guesser import *
 from players.codemaster import *
@@ -20,7 +22,9 @@ class GameRun:
         parser.add_argument("--seed", help="Random seed value for board state -- integer or 'time'", default='time')
 
         parser.add_argument("--w2v", help="Path to w2v file or None", default=None)
+        parser.add_argument("--w2v_weights", help="path to w2v weights file of None", default=None)
         parser.add_argument("--glove", help="Path to glove file or None", default=None)
+        parser.add_argument("--glove_weights", help="path to glove weights file of None", default=None)
         parser.add_argument("--wordnet", help="Name of wordnet file or None, most like ic-brown.dat", default=None)
         parser.add_argument("--glove_cm", help="Path to glove file or None", default=None)
         parser.add_argument("--glove_guesser", help="Path to glove file or None", default=None)
@@ -68,7 +72,7 @@ class GameRun:
                 print('loaded wordnet')
 
             if args.glove is not None:
-                glove_vectors = Game.load_glove_vecs(args.glove)
+                glove_vectors = Game.load_glove_vecs(args.glove, args.glove_weights)
                 self.g_kwargs["glove_vecs"] = glove_vectors
                 self.cm_kwargs["glove_vecs"] = glove_vectors
                 print('loaded glove vectors')
@@ -157,3 +161,7 @@ if __name__ == "__main__":
         if game_setup.num_games > 1:
             print_progress_bar(game_setup, i + 1, game_setup.num_games)
             game_setup.update_seed()
+
+# if __name__ == "__main__":
+#         matrix = np.random.uniform(-1, 1, (50, 50))
+#         np.savetxt("players/glove_weight_matrix", matrix)
