@@ -11,13 +11,6 @@ class AIGuesser(Guesser):
         self.glove_vecs = glove_vecs
         self.word_vectors = word_vectors
         self.num = 0
-        size=300
-        random_values =  np.random.binomial(1, 0.05, size=(300,))
-        secondary_diagonal =  np.random.binomial(1, 0.01, size=(299,))
-        theard_diagonal =  np.random.binomial(1, 0.1, size=(300,))
-        self.matrix = np.diag(random_values)
-        self.matrix[np.arange(size - 1), np.arange(1, size)] = secondary_diagonal
-        self.distance_threshold = distance_threshold
 
     def set_board(self, words):
         self.words = words
@@ -32,17 +25,7 @@ class AIGuesser(Guesser):
         return self.num > 0
 
     def get_answer(self):
-        sorted_words = self.compute_distance(self.clue, self.words)
-        next_guess_distance, next_guess_word = sorted_words[0]
-
-        # if next_guess_distance > self.distance_threshold:
-        #     print(f"Next guess is too far-fetched ({next_guess_distance} > {self.distance_threshold}), stopping.")
-        #     self.num = 0
-        #     return None
-
-        print(sorted_words[0][1], next_guess_distance)
-        self.num -= 1
-        return sorted_words[0][1]
+        return self.words[0]
 
     def compute_distance(self, clue, board):
         w2v = []
