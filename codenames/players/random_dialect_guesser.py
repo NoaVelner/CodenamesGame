@@ -35,11 +35,6 @@ class AIGuesser(Guesser):
         sorted_words = self.compute_distance(self.clue, self.words)
         next_guess_distance, next_guess_word = sorted_words[0]
 
-        # if next_guess_distance > self.distance_threshold:
-        #     print(f"Next guess is too far-fetched ({next_guess_distance} > {self.distance_threshold}), stopping.")
-        #     self.num = 0
-        #     return None
-
         print(sorted_words[0][1], next_guess_distance)
         self.num -= 1
         return sorted_words[0][1]

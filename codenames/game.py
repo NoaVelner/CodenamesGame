@@ -298,7 +298,7 @@ class Game:
         game_condition = GameCondition.CONTINUE
         game_counter = 0
         opponent_colors = ["Blue", "Red"]
-        while game_condition != GameCondition.LOSS and game_condition != GameCondition.WIN:
+        while game_condition != GameCondition.LOSS and game_condition != GameCondition.WIN and game_condition != GameCondition.HIT_ASSASSIN:
             # board setup and display
             print('\n' * 2)
             words_in_play = self.get_words_on_board()
@@ -321,7 +321,7 @@ class Game:
             turn_condition = game_condition
 
             while guess_num <= clue_num and keep_guessing and game_condition == turn_condition:
-                print("** Red Turn: **" if self.current_team==0 else "** Blue Turn: **")
+                print("Red Turn: " if self.current_team==0 else "Blue Turn: ")
                 self.guessers[self.current_team].set_board(words_in_play)
                 guess_answer = self.guessers[self.current_team].get_answer()
 
