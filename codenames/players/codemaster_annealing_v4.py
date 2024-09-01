@@ -103,7 +103,7 @@ class AICodemaster(Codemaster):
         self.maps = map_in_play
 
 
-    def get_clue(self, bad_color = "Blue"): #BAD COLOR = "Blue"
+    def get_clue(self, bad_color = "Blue", good_color="Red"): #BAD COLOR = "Blue"
         red_words = []
         bad_words = []
         assassin = ''
