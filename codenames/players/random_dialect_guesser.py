@@ -5,22 +5,17 @@ from players.guesser import Guesser
 
 class AIGuesser(Guesser):
 
-    def __init__(self, brown_ic=None, glove_vecs=None, word_vectors=None, param=0.1, distance_threshold=0.7):
+    def __init__(self, brown_ic=None, glove_vecs=None, word_vectors=None, param=0.1):
         super().__init__()
         self.brown_ic = brown_ic
         self.glove_vecs = glove_vecs
         self.word_vectors = word_vectors
         self.num = 0
         size=300
-        random_values =  np.random.binomial(1, 0.05, size=(300,))
-        secondary_diagonal =  np.random.binomial(1, 0.01, size=(299,))
-        theard_diagonal =  np.random.binomial(1, 0.1, size=(300,))
+        random_values =  np.random.binomial(1, 0.09, size=(300,))
+        secondary_diagonal =  np.random.binomial(1, 0.02, size=(299,))
         self.matrix = np.diag(random_values)
         self.matrix[np.arange(size - 1), np.arange(1, size)] = secondary_diagonal
-
-        print(self.matrix)
-
-        self.distance_threshold = distance_threshold
 
     def set_board(self, words):
         self.words = words
@@ -34,14 +29,12 @@ class AIGuesser(Guesser):
     def keep_guessing(self):
         return self.num > 0
 
-    def get_answer(self):
+    def get_answer(self, num_of_guess = 1):
         sorted_words = self.compute_distance(self.clue, self.words)
         next_guess_distance, next_guess_word = sorted_words[0]
 
-        # if next_guess_distance > self.distance_threshold:
-        #     print(f"Next guess is too far-fetched ({next_guess_distance} > {self.distance_threshold}), stopping.")
-        #     self.num = 0
-        #     return None
+        if num_of_guess >1:
+            return sorted_words[:num_of_guess]
 
         print(sorted_words[0][1], next_guess_distance)
         self.num -= 1
