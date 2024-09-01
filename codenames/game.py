@@ -320,7 +320,7 @@ class Game:
             game_condition = GameCondition.HIT_RED if self.current_team == 0 else GameCondition.HIT_BLUE
             turn_condition = game_condition
 
-            while guess_num <= clue_num and keep_guessing and game_condition == turn_condition:
+            while guess_num < clue_num and keep_guessing and game_condition == turn_condition:
                 print(f"Round {game_counter}, Red Turn: " if self.current_team==0 else "Blue Turn: ")
                 self.guessers[self.current_team].set_board(words_in_play)
                 guess_answer = self.guessers[self.current_team].get_answer()
