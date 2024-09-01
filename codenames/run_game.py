@@ -17,8 +17,8 @@ class GameRun:
         parser = argparse.ArgumentParser(
             description="Run the Codenames AI competition game.",
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-        parser.add_argument("codemaster1", help="import string of form A.B.C.MyClass or 'human'")
-        parser.add_argument("guesser1", help="import string of form A.B.C.MyClass or 'human'")
+        parser.add_argument("--codemaster1", help="import string of form A.B.C.MyClass or 'human'", default='human')
+        parser.add_argument("--guesser1", help="import string of form A.B.C.MyClass or 'human'", default='human')
         parser.add_argument("--codemaster2", help="import string of form A.B.C.MyClass or 'human'", default = None)
         parser.add_argument("--guesser2", help="import string of form A.B.C.MyClass or 'human'", default = None)
         parser.add_argument("--seed", help="Random seed value for board state -- integer or 'time'", default='time')
@@ -93,7 +93,7 @@ class GameRun:
                 self.guessers.append(HumanGuesser)
                 print('human guesser2')
             else:
-                self.guessers.append(self.import_string_to_class(args.guesser1))
+                self.guessers.append(self.import_string_to_class(args.guesser2))
                 print('loaded guesser2 class')
                 self.have_AI_player = True
 
