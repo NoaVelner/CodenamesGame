@@ -309,7 +309,7 @@ class Game:
 
             # codemaster gives clue & number here
             clue, clue_num = self.codemasters[self.current_team].get_clue(opponent_colors[self.current_team])
-            game_counter += 1
+            game_counter += 1 if self.current_team == 0 else 0
             keep_guessing = True
             guess_num = 0
             clue_num = int(clue_num)
@@ -321,7 +321,7 @@ class Game:
             turn_condition = game_condition
 
             while guess_num <= clue_num and keep_guessing and game_condition == turn_condition:
-                print("Red Turn: " if self.current_team==0 else "Blue Turn: ")
+                print(f"Round {game_counter}, Red Turn: " if self.current_team==0 else "Blue Turn: ")
                 self.guessers[self.current_team].set_board(words_in_play)
                 guess_answer = self.guessers[self.current_team].get_answer()
 
@@ -351,6 +351,7 @@ class Game:
                         self.write_results(game_counter)
                     print("You Lost")
                     print("Game Counter:", game_counter)
+                    self.guessers[self.current_team].plot_unique_guess_counts()
 
                 elif game_condition == GameCondition.LOSS:
                     self.game_end_time = time.time()
@@ -359,6 +360,8 @@ class Game:
                         self.write_results(game_counter)
                     print(f"You Lost, Blue Won")
                     print("Game Counter:", game_counter)
+                    self.guessers[self.current_team].plot_unique_guess_counts()
+
 
                 elif game_condition == GameCondition.WIN:
                     self.game_end_time = time.time()
@@ -367,5 +370,7 @@ class Game:
                         self.write_results(game_counter)
                     print("You Won")
                     print("Game Counter:", game_counter)
+                    self.guessers[self.current_team].plot_unique_guess_counts()
+
             if self.two_teams:
                 self.current_team = 1 - self.current_team

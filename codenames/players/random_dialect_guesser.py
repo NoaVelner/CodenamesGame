@@ -31,9 +31,12 @@ class AIGuesser(Guesser):
     def keep_guessing(self):
         return self.num > 0
 
-    def get_answer(self):
+    def get_answer(self, num_of_guess = 1):
         sorted_words = self.compute_distance(self.clue, self.words)
         next_guess_distance, next_guess_word = sorted_words[0]
+
+        if num_of_guess >1:
+            return sorted_words[:num_of_guess]
 
         print(sorted_words[0][1], next_guess_distance)
         self.num -= 1
