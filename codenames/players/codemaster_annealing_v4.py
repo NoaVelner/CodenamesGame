@@ -103,7 +103,7 @@ class AICodemaster(Codemaster):
         self.maps = map_in_play
 
 
-    def get_clue(self): #BAD COLOR = "Blue"
+    def get_clue(self, bad_color = "Blue"): #BAD COLOR = "Blue"
         red_words = []
         bad_words = []
         assassin = ''
@@ -112,7 +112,7 @@ class AICodemaster(Codemaster):
         for i in range(25):
             if self.words[i][0] == '*':
                 continue
-            elif self.maps[i] == "Assassin" or self.maps[i] == "Blue" or self.maps[i] == "Civilian": # "Blue" = "BAD COLOR
+            elif self.maps[i] == "Assassin" or self.maps[i] == bad_color or self.maps[i] == "Civilian": # "Blue" = "BAD COLOR
                 bad_words.append(self.words[i].lower())
                 if self.maps[i] == "Assassin":
                     assassin = self.words[i]
