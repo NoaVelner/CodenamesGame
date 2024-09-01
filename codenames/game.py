@@ -351,7 +351,7 @@ class Game:
                         self.write_results(game_counter)
                     print("You Lost")
                     print("Game Counter:", game_counter)
-                    self.guessers[self.current_team].plot_unique_guess_counts()
+                    # self.guessers[self.current_team].plot_unique_guess_counts()
 
                 elif game_condition == GameCondition.LOSS:
                     self.game_end_time = time.time()
@@ -360,7 +360,7 @@ class Game:
                         self.write_results(game_counter)
                     print(f"You Lost, Blue Won")
                     print("Game Counter:", game_counter)
-                    self.guessers[self.current_team].plot_unique_guess_counts()
+                    # self.guessers[self.current_team].plot_unique_guess_counts()
 
 
                 elif game_condition == GameCondition.WIN:
@@ -370,7 +370,7 @@ class Game:
                         self.write_results(game_counter)
                     print("You Won")
                     print("Game Counter:", game_counter)
-                    self.guessers[self.current_team].plot_unique_guess_counts()
+                    # self.guessers[self.current_team].plot_unique_guess_counts()
 
             if self.two_teams:
                 self.current_team = 1 - self.current_team
