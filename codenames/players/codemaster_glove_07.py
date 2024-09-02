@@ -28,7 +28,7 @@ class AICodemaster(Codemaster):
         self.words = words
         self.maps = maps
 
-    def get_clue(self):
+    def get_clue(self, bad_color="Blue", good_color = "Red"):
         cos_dist = scipy.spatial.distance.cosine
         red_words = []
         bad_words = []
@@ -37,11 +37,11 @@ class AICodemaster(Codemaster):
         for i in range(25):
             if self.words[i][0] == '*':
                 continue
-            elif self.maps[i] == "Assassin" or self.maps[i] == "Blue" or self.maps[i] == "Civilian":
+            elif self.maps[i] == "Assassin" or self.maps[i] == bad_color or self.maps[i] == "Civilian":
                 bad_words.append(self.words[i].lower())
             else:
                 red_words.append(self.words[i].lower())
-        print("RED:\t", red_words)
+        print(f"{good_color}:\t", red_words)
 
         all_vectors = (self.glove_vecs,)
         bests = {}
