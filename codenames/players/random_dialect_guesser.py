@@ -62,3 +62,5 @@ class AIGuesser(Guesser):
 
         w2v = list(sorted(w2v))
         return w2v
+
+    def get_certainty(self): return 0

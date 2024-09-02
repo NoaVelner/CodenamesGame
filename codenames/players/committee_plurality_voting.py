@@ -5,8 +5,12 @@ import players.random_dialect_guesser
 import matplotlib.pyplot as plt
 
 
-
 class MetaGuesser:
+    """
+    Each player votes for their top guess, and the guess with the
+    most votes wins, without considering the certainty levels
+    (AKA simple committe)
+    """
     def __init__(self, brown_ic=None, glove_vecs=None, word_vectors=None):
         self.players = [players.random_dialect_guesser.AIGuesser(brown_ic, glove_vecs, word_vectors, -2) for i in range(5)]
         self.unique_guess_counts =[]
@@ -20,24 +24,17 @@ class MetaGuesser:
             player.set_clue(clue, num)
 
     def keep_guessing(self):
-        # Keep guessing if all players agree that they should.
-        # TODO: Change to "any" and avoid None guesses if needed
+        # Only keep guessing if all players agree that they should
+        # Todo: Change to "any" and evoid None guesses
         return all(player.keep_guessing() for player in self.players)
 
     def get_answer(self):
-        """ Simple weights version: the first is the most important, and so on"""
-        all_guesses = []
-        for player in self.players:
-            guesses = player.get_answer(3)  # Assume this method returns [(guess, certainty), ...]
-            all_guesses.append(guesses)
+        answers = [player.get_answer() for player in self.players] # assume this function (certainty, guesses)
+        answer_counts = Counter(answers)
+        self.unique_guess_counts.append(len(set(answers)))
 
-        answer_counts = Counter()
-        for guesses in all_guesses:
-            for i in range(3):
-                answer_counts[guesses[i][1]]+=2- guesses[i][0]
-        for (el, count) in answer_counts.items():
-            print(f"ELEMENT: {el}, COUNT: {count}")
         final_answer = answer_counts.most_common(1)[0][0]
+        print(f'Meta-player final guess: {final_answer}')
         return final_answer
 
     def plot_unique_guess_counts(self):
