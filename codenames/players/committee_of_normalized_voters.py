@@ -78,3 +78,5 @@ class MetaGuesser:
 
     def get_certainty(self):
         return self.certainty_of_chosen_guess
+
+
