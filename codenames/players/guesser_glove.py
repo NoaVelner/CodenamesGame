@@ -29,7 +29,6 @@ class AIGuesser(Guesser):
         # preset weights based on testing for optimal voting algorithm
         # weights[0] = w2v initial weight, weights[1] = glove initial weight
         # w2v holds a higher initial value due to its accuracy.
-        weights = [13, 12]
         sorted_words = self._compute_distance(self.clue, self.words)
         print(f'guesses: {sorted_words}')
         self.num -= 1

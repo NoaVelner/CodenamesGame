@@ -13,7 +13,7 @@ class Codemaster(ABC):
         pass
 
     @abstractmethod
-    def get_clue(self):
+    def get_clue(self, bad_color="Blue", good_color = "Red"):
         """Function that returns a clue word and number of estimated related words on the board"""
         pass
 
@@ -28,7 +28,7 @@ class HumanCodemaster(Codemaster):
         self.words = words_in_play
         self.maps = map_in_play
         
-    def get_clue(self, bad_color="Blue", good_color="Red"):
+    def get_clue(self, bad_color="Blue", good_color = "Red"):
         clue_input = input("Input CM Clue:\nPlease enter a Word followed by a space and a Number >> ")
         clue_input = clue_input.strip()
         type(clue_input)
