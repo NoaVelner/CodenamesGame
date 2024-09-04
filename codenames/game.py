@@ -151,16 +151,19 @@ class Game:
             if counter >= 1 and i % 5 == 0:
                 print("\n")
             if self.key_grid[i] == 'Red':
-                print(str.center(colorama.Fore.RED + self.words_on_board[i], 15), " ", end='')
+                print(str.center(colorama.Fore.RESET + self.words_on_board[i], 15), " ", end='')
+                # print(str.center(colorama.Fore.RED + self.words_on_board[i], 15), " ", end='')
                 counter += 1
             elif self.key_grid[i] == 'Blue':
-                print(str.center(colorama.Fore.BLUE + self.words_on_board[i], 15), " ", end='')
+                print(str.center(colorama.Fore.RESET + self.words_on_board[i], 15), " ", end='')
+                # print(str.center(colorama.Fore.BLUE + self.words_on_board[i], 15), " ", end='')
                 counter += 1
             elif self.key_grid[i] == 'Civilian':
                 print(str.center(colorama.Fore.RESET + self.words_on_board[i], 15), " ", end='')
                 counter += 1
             else:
-                print(str.center(colorama.Fore.MAGENTA + self.words_on_board[i], 15), " ", end='')
+                print(str.center(colorama.Fore.RESET + self.words_on_board[i], 15), " ", end='')
+                # print(str.center(colorama.Fore.MAGENTA + self.words_on_board[i], 15), " ", end='')
                 counter += 1
         print(str.center(colorama.Fore.RESET +
                          "\n___________________________________________________________", 60))
@@ -188,16 +191,16 @@ class Game:
             if counter >= 1 and i % 5 == 0:
                 print("\n")
             if self.key_grid[i] == 'Red':
-                print(str.center(colorama.Fore.RED + self.key_grid[i], 15), " ", end='')
+                print(str.center(colorama.Fore.RESET + self.key_grid[i], 15), " ", end='')
                 counter += 1
             elif self.key_grid[i] == 'Blue':
-                print(str.center(colorama.Fore.BLUE + self.key_grid[i], 15), " ", end='')
+                print(str.center(colorama.Fore.RESET + self.key_grid[i], 15), " ", end='')
                 counter += 1
             elif self.key_grid[i] == 'Civilian':
                 print(str.center(colorama.Fore.RESET + self.key_grid[i], 15), " ", end='')
                 counter += 1
             else:
-                print(str.center(colorama.Fore.MAGENTA + self.key_grid[i], 15), " ", end='')
+                print(str.center(colorama.Fore.RESET + self.key_grid[i], 15), " ", end='')
                 counter += 1
         print(str.center(colorama.Fore.RESET +
                          "\n___________________________________________________________", 55))
@@ -242,10 +245,11 @@ class Game:
             self.words_on_board[guess_index] = "*Civilian*"
             return GameCondition.CONTINUE
 
-    def write_results(self, num_of_turns):
+    def write_results(self, num_of_turns, certainties):
         """Logging function
         writes in both the original and a more detailed new style
         """
+        print(certainties)
         red_result = 0
         blue_result = 0
         civ_result = 0
@@ -271,6 +275,8 @@ class Game:
                 f' R:{red_result} CM:{type(self.codemasters[0]).__name__} '
                 f'GUESSER:{type(self.guessers[0]).__name__} SEED:{self.seed}\n'
             )
+        with open("results/certainties.txt", "a") as f:
+            f.write(f"{certainties}\n")
 
         with open("results/bot_results_new_style.txt", "a") as f:
             results = {"game_name": self.game_name,
@@ -287,6 +293,7 @@ class Game:
                        }
             f.write(json.dumps(results))
             f.write('\n')
+
 
     @staticmethod
     def clear_results():
@@ -305,7 +312,7 @@ class Game:
             words_in_play = self.get_words_on_board()
             current_key_grid = self.get_key_grid()
             self.codemasters[self.current_team].set_game_state(words_in_play, current_key_grid)
-            self._display_key_grid()
+            # self._display_key_grid()
             self._display_board_codemaster()
 
             # codemaster gives clue & number here
@@ -349,29 +356,37 @@ class Game:
                     game_counter = 25
                     self._display_board_codemaster()
                     if self.do_log:
-                        self.write_results(game_counter)
+                        print()
+                        print()
+                        self.write_results(game_counter, self.guessers[0].get_certainty())
+                        self.write_results(game_counter, self.guessers[0])
                     print("You Lost")
                     print("Game Counter:", game_counter)
-                    self.guessers[self.current_team].plot_unique_guess_counts()
+                    # self.guessers[self.current_team].plot_unique_guess_counts()
+                    # self.guessers[self.current_team].plot_certainty_of_chosen_guess()
 
                 elif game_condition == GameCondition.LOSS:
                     self.game_end_time = time.time()
                     self._display_board_codemaster()
                     if self.do_log:
-                        self.write_results(game_counter)
+                        self.write_results(game_counter, self.guessers[0].get_certainty())
+                        self.write_results(game_counter, self.guessers[0])
                     print(f"You Lost, Blue Won")
                     print("Game Counter:", game_counter)
-                    self.guessers[self.current_team].plot_unique_guess_counts()
+                    # self.guessers[self.current_team].plot_unique_guess_counts()
+                    # self.guessers[self.current_team].plot_certainty_of_chosen_guess()
 
 
                 elif game_condition == GameCondition.WIN:
                     self.game_end_time = time.time()
                     self._display_board_codemaster()
                     if self.do_log:
-                        self.write_results(game_counter)
+                        self.write_results(game_counter, self.guessers[0])
+                        # self.write_results(game_counter, self.guessers[0].get_certainty())
                     print("You Won")
                     print("Game Counter:", game_counter)
-                    self.guessers[self.current_team].plot_unique_guess_counts()
+                    # self.guessers[self.current_team].plot_unique_guess_counts()
+                    # self.guessers[self.current_team].plot_certainty_of_chosen_guess()
 
             if self.two_teams:
                 self.current_team = 1 - self.current_team

@@ -5,7 +5,7 @@ from players.guesser import Guesser
 
 class AIGuesser(Guesser):
 
-    def __init__(self, brown_ic=None, glove_vecs=None, word_vectors=None, param=0.1):
+    def __init__(self, brown_ic=None, glove_vecs=None, word_vectors=None, budget=0):
         super().__init__()
         self.brown_ic = brown_ic
         self.glove_vecs = glove_vecs
@@ -16,6 +16,7 @@ class AIGuesser(Guesser):
         secondary_diagonal =  np.random.binomial(1, 0.02, size=(299,))
         self.matrix = np.diag(random_values)
         self.matrix[np.arange(size - 1), np.arange(1, size)] = secondary_diagonal
+        self.budget = budget
 
     def set_board(self, words):
         self.words = words
