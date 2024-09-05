@@ -12,7 +12,7 @@ class MetaGuesser:
     player with the highest bid, and returns the guess made by that player.
     """
 
-    def __init__(self, brown_ic=None, glove_vecs=None, word_vectors=None, budget=10, num_players=5):
+    def __init__(self, brown_ic=None, glove_vecs=None, word_vectors=None, num_players=5, budget=10):
         self.players = [players.random_dialect_guesser.AIGuesser(brown_ic, glove_vecs, word_vectors, budget)
                         for _ in range(num_players)]
 
