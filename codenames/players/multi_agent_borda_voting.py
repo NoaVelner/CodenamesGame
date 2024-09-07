@@ -44,50 +44,8 @@ class MetaGuesser:
         for (el, count) in answer_counts.items():
             print(f"ELEMENT: {el}, COUNT: {count}")
 
-        unique_count = len(answer_counts)
-        self.unique_guess_counts.append(unique_count)
         final_answer, final_count = answer_counts.most_common(1)[0]
 
         total_score = sum(answer_counts.values())
-
-        certainty_percentage = np.round((final_count / total_score),3)
-        self.certainty_of_chosen_guess.append(certainty_percentage)
         print(f'Meta-player final guess: {final_answer}')
         return final_answer
-
-    def get_certainty(self):
-        return self.certainty_of_chosen_guess
-
-    def plot_unique_guess_counts(self):
-        plt.plot(self.unique_guess_counts, marker='o')
-        plt.title('Number of Unique Guesses per Iteration')
-        plt.xlabel('Iteration')
-        plt.ylabel('Number of Unique Guesses')
-        plt.show()
-
-    def plot_certainty_of_chosen_guess(self):
-        plt.plot(self.certainty_of_chosen_guess, marker='o')
-        plt.title('Certainty of Chosen Guess per Iteration')
-        plt.xlabel('Iteration')
-        plt.ylabel('Certainty')
-        plt.show()
-
-
-    # def get_answer(self):
-    #     """ normalization"""
-    #     all_guesses = []
-    #     for player in self.players:
-    #         guesses = player.get_answer(3)  # Assume this method returns [(certainty, guess), ...]
-    #         all_guesses.append(guesses)
-    #
-    #     answer_counts = Counter()
-    #     for guesses in all_guesses:
-    #         for i in range(3):
-    #             answer_counts[guesses[i][1]] += 2 - guesses[i][0]
-    #
-    #     for (el, count) in answer_counts.items():
-    #         print(f"ELEMENT: {el}, COUNT: {count}")
-    #
-    #     self.unique_guess_counts = len(answer_counts.items())
-    #     final_answer = answer_counts.most_common(1)[0][0]
-    #     return final_answer

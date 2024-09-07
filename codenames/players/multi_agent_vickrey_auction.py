@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 
 class MetaGuesser:
     """
-
     Each guesser suggest a bid for guesse, and this class selects the
     player with the highest bid, and returns the guess made by that player.
+    The player will pay the second highest bid.
     """
 
     def __init__(self, brown_ic=None, glove_vecs=None, word_vectors=None, num_players=5, budget=10):
@@ -35,16 +35,18 @@ class MetaGuesser:
         """
         answers = [player.suggest_bid_and_guess() for player in self.players]
         choosen_guesser = 0
+        second_price = answers[0][0]
 
         for i in range(len(self.players)):
             print(answers[i])
             if answers[i][0] > answers[choosen_guesser][0]:
+                second_price = answers[choosen_guesser][0]
                 choosen_guesser = i
 
-        self.players[choosen_guesser].update_budget(-answers[choosen_guesser][0])
+        self.players[choosen_guesser].update_budget(-second_price)
 
         final_answer = answers[choosen_guesser][1]
         print(f'Sealed Bid Meta-player Final Guess: {final_answer}, '
-              f'The highest bid is {np.round(answers[choosen_guesser][0],5)}')
+              f'The highest bid is {np.round(second_price,5)}')
 
         return final_answer
